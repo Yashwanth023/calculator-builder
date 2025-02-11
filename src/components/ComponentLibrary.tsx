@@ -29,6 +29,21 @@ interface Props {
 }
 
 export const ComponentLibrary = ({ onAdd }: Props) => {
+  const getButtonClass = (component: Omit<CalculatorComponent, 'id'>) => {
+    const baseClass = 'transition-all duration-200 hover:scale-105';
+    
+    if (component.type === 'display') {
+      return `${baseClass} col-span-4 h-20 bg-gradient-to-r from-violet-50 to-white hover:from-violet-100 hover:to-white`;
+    }
+    if (component.type === 'operator') {
+      return `${baseClass} bg-violet-100 text-violet-700 hover:bg-violet-200`;
+    }
+    if (component.type === 'equals') {
+      return `${baseClass} bg-violet-600 text-white hover:bg-violet-700`;
+    }
+    return `${baseClass} bg-white text-violet-900 hover:bg-violet-50`;
+  };
+
   return (
     <Card className="p-6 bg-white/90 backdrop-blur-md border-violet-200 shadow-lg animate-slide-in">
       <h2 className="text-lg font-semibold mb-4 text-violet-800">Component Library</h2>
@@ -37,15 +52,7 @@ export const ComponentLibrary = ({ onAdd }: Props) => {
           <Button
             key={component.value}
             onClick={() => onAdd(component)}
-            className={cn(
-              'transition-all duration-200 hover:scale-105',
-              component.type === 'display'
-                ? 'col-span-4 h-20 bg-gradient-to-r from-violet-50 to-white hover:from-violet-100 hover:to-white'
-                : '',
-              component.type === 'operator' && 'bg-violet-100 text-violet-700 hover:bg-violet-200',
-              component.type === 'equals' && 'bg-violet-600 text-white hover:bg-violet-700',
-              component.type === 'number' && 'bg-white text-violet-900 hover:bg-violet-50'
-            )}
+            className={getButtonClass(component)}
             variant="outline"
           >
             {component.value || 'Display'}

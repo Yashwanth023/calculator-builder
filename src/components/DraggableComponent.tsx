@@ -1,7 +1,6 @@
 
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { cn } from '@/lib/utils';
 import type { CalculatorComponent } from '@/store/useCalculatorStore';
 
 interface Props {
@@ -25,28 +24,36 @@ export const DraggableComponent = ({ component, onRemove, onClick }: Props) => {
     transition,
   };
 
+  const getContainerClass = () => {
+    return `relative group cursor-move animate-fade-in ${isDragging ? 'opacity-50' : ''}`;
+  };
+
+  const getButtonClass = () => {
+    const baseClass = 'w-16 h-16 rounded-xl bg-white/95 backdrop-blur-sm border shadow-lg hover:scale-105 transition-all duration-200 flex items-center justify-center text-lg font-medium';
+    
+    if (component.type === 'display') {
+      return `${baseClass} w-full h-20 bg-gradient-to-r from-violet-50 to-white cursor-move`;
+    }
+    if (component.type === 'operator') {
+      return `${baseClass} bg-violet-100 border-violet-200 text-violet-700 hover:bg-violet-200`;
+    }
+    if (component.type === 'equals') {
+      return `${baseClass} bg-violet-600 border-violet-700 text-white hover:bg-violet-700`;
+    }
+    return `${baseClass} bg-white border-violet-100 text-violet-900 hover:bg-violet-50`;
+  };
+
   return (
     <div
       ref={setNodeRef}
       style={style}
-      className={cn(
-        'relative group cursor-move animate-fade-in',
-        isDragging && 'opacity-50'
-      )}
+      className={getContainerClass()}
       {...attributes}
       {...listeners}
     >
       <button
         onClick={() => onClick(component.value)}
-        className={cn(
-          'w-16 h-16 rounded-xl bg-white/95 backdrop-blur-sm border shadow-lg',
-          'hover:scale-105 transition-all duration-200',
-          'flex items-center justify-center text-lg font-medium',
-          component.type === 'operator' && 'bg-violet-100 border-violet-200 text-violet-700 hover:bg-violet-200',
-          component.type === 'equals' && 'bg-violet-600 border-violet-700 text-white hover:bg-violet-700',
-          component.type === 'number' && 'bg-white border-violet-100 text-violet-900 hover:bg-violet-50',
-          component.type === 'display' && 'w-full h-20 bg-gradient-to-r from-violet-50 to-white cursor-move'
-        )}
+        className={getButtonClass()}
       >
         {component.type === 'display' ? (
           <div className="text-right px-4 w-full">
