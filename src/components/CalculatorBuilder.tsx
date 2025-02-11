@@ -77,17 +77,17 @@ export const CalculatorBuilder = () => {
   };
 
   return (
-    <div className="min-h-screen p-8 bg-gradient-to-br from-calculator-primary/20 to-white">
+    <div className="min-h-screen p-8 bg-gradient-to-br from-violet-100 via-purple-50 to-indigo-100">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-center mb-8 animate-fade-in">
+        <h1 className="text-3xl font-bold text-center mb-8 animate-fade-in text-violet-800">
           Calculator Builder
         </h1>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <ComponentLibrary onAdd={handleAdd} />
           
-          <Card className="p-6 bg-white/80 backdrop-blur-sm border-calculator-border animate-slide-in">
-            <h2 className="text-lg font-semibold mb-4">Calculator Preview</h2>
+          <Card className="p-6 bg-white/90 backdrop-blur-md border-violet-200 shadow-lg animate-slide-in">
+            <h2 className="text-lg font-semibold mb-4 text-violet-800">Calculator Preview</h2>
             <DndContext
               sensors={sensors}
               collisionDetection={closestCenter}

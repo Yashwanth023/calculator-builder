@@ -39,18 +39,19 @@ export const DraggableComponent = ({ component, onRemove, onClick }: Props) => {
       <button
         onClick={() => onClick(component.value)}
         className={cn(
-          'w-16 h-16 rounded-lg bg-white/90 backdrop-blur-sm border border-calculator-border shadow-sm',
-          'hover:bg-calculator-primary transition-colors duration-200',
-          'flex items-center justify-center text-lg font-medium text-calculator-accent',
-          component.type === 'operator' && 'bg-calculator-primary',
-          component.type === 'equals' && 'bg-calculator-accent text-white hover:bg-calculator-accent/90',
-          component.type === 'display' && 'w-full h-20 bg-white/95 cursor-move'
+          'w-16 h-16 rounded-xl bg-white/95 backdrop-blur-sm border shadow-lg',
+          'hover:scale-105 transition-all duration-200',
+          'flex items-center justify-center text-lg font-medium',
+          component.type === 'operator' && 'bg-violet-100 border-violet-200 text-violet-700 hover:bg-violet-200',
+          component.type === 'equals' && 'bg-violet-600 border-violet-700 text-white hover:bg-violet-700',
+          component.type === 'number' && 'bg-white border-violet-100 text-violet-900 hover:bg-violet-50',
+          component.type === 'display' && 'w-full h-20 bg-gradient-to-r from-violet-50 to-white cursor-move'
         )}
       >
         {component.type === 'display' ? (
           <div className="text-right px-4 w-full">
-            <div className="text-sm text-gray-500">{component.value}</div>
-            <div className="text-2xl">{component.value || '0'}</div>
+            <div className="text-sm text-violet-400">{component.value}</div>
+            <div className="text-2xl text-violet-900">{component.value || '0'}</div>
           </div>
         ) : (
           component.value
@@ -61,7 +62,7 @@ export const DraggableComponent = ({ component, onRemove, onClick }: Props) => {
         onClick={() => onRemove(component.id)}
         className="absolute -top-2 -right-2 opacity-0 group-hover:opacity-100 transition-opacity
                  bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center
-                 text-xs hover:bg-red-600"
+                 text-xs hover:bg-red-600 hover:scale-110 transform duration-200"
       >
         ×
       </button>
