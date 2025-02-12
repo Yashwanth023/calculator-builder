@@ -1,7 +1,6 @@
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
 import type { CalculatorComponent } from "@/store/useCalculatorStore";
 
 const components: Omit<CalculatorComponent, 'id'>[] = [
@@ -33,20 +32,20 @@ export const ComponentLibrary = ({ onAdd }: Props) => {
     const baseClass = 'transition-all duration-200 hover:scale-105';
     
     if (component.type === 'display') {
-      return `${baseClass} col-span-4 h-20 bg-gradient-to-r from-violet-50 to-white hover:from-violet-100 hover:to-white`;
+      return `${baseClass} col-span-4 h-20 bg-gradient-to-r from-violet-50 to-white hover:from-violet-100 hover:to-white dark:from-violet-900 dark:to-violet-800 dark:text-white`;
     }
     if (component.type === 'operator') {
-      return `${baseClass} bg-violet-100 text-violet-700 hover:bg-violet-200`;
+      return `${baseClass} bg-violet-100 text-violet-700 hover:bg-violet-200 dark:bg-violet-800 dark:text-violet-100`;
     }
     if (component.type === 'equals') {
-      return `${baseClass} bg-violet-600 text-white hover:bg-violet-700`;
+      return `${baseClass} bg-violet-600 text-white hover:bg-violet-700 dark:bg-violet-500`;
     }
-    return `${baseClass} bg-white text-violet-900 hover:bg-violet-50`;
+    return `${baseClass} bg-white text-violet-900 hover:bg-violet-50 dark:bg-violet-900 dark:text-violet-100`;
   };
 
   return (
-    <Card className="p-6 bg-white/90 backdrop-blur-md border-violet-200 shadow-lg animate-slide-in">
-      <h2 className="text-lg font-semibold mb-4 text-violet-800">Component Library</h2>
+    <Card className="p-6 bg-white/90 backdrop-blur-md border-violet-200 shadow-lg animate-slide-in dark:bg-gray-900/90 dark:border-violet-800">
+      <h2 className="text-lg font-semibold mb-4 text-violet-800 dark:text-violet-200">Component Library</h2>
       <div className="grid grid-cols-4 gap-2">
         {components.map((component) => (
           <Button
