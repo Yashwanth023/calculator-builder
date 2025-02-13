@@ -39,4 +39,4 @@ npm run dev
 ```
 
 3. Open your browser and start building your calculator!
-
+ - Navigate to localhost:3000 and preview the results!!
