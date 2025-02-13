@@ -1,4 +1,5 @@
 
+import { useDraggable } from '@dnd-kit/core';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import type { CalculatorComponent } from "@/store/useCalculatorStore";
@@ -27,9 +28,31 @@ interface Props {
   onAdd: (component: Omit<CalculatorComponent, 'id'>) => void;
 }
 
+const DraggableButton = ({ component, className }: { 
+  component: Omit<CalculatorComponent, 'id'>;
+  className: string;
+}) => {
+  const { attributes, listeners, setNodeRef } = useDraggable({
+    id: `library-${component.type}-${component.value}`,
+    data: component,
+  });
+
+  return (
+    <Button
+      ref={setNodeRef}
+      className={className}
+      variant="outline"
+      {...attributes}
+      {...listeners}
+    >
+      {component.value || 'Display'}
+    </Button>
+  );
+};
+
 export const ComponentLibrary = ({ onAdd }: Props) => {
   const getButtonClass = (component: Omit<CalculatorComponent, 'id'>) => {
-    const baseClass = 'transition-all duration-200 hover:scale-105';
+    const baseClass = 'transition-all duration-200 hover:scale-105 cursor-move';
     
     if (component.type === 'display') {
       return `${baseClass} col-span-4 h-20 bg-gradient-to-r from-violet-50 to-white hover:from-violet-100 hover:to-white dark:from-violet-900 dark:to-violet-800 dark:text-white`;
@@ -48,14 +71,11 @@ export const ComponentLibrary = ({ onAdd }: Props) => {
       <h2 className="text-lg font-semibold mb-4 text-violet-800 dark:text-violet-200">Component Library</h2>
       <div className="grid grid-cols-4 gap-2">
         {components.map((component) => (
-          <Button
-            key={component.value}
-            onClick={() => onAdd(component)}
+          <DraggableButton
+            key={`${component.type}-${component.value}`}
+            component={component}
             className={getButtonClass(component)}
-            variant="outline"
-          >
-            {component.value || 'Display'}
-          </Button>
+          />
         ))}
       </div>
     </Card>
