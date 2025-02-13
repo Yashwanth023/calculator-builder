@@ -10,6 +10,7 @@ import {
   DragEndEvent,
   DragOverlay,
   DragStartEvent,
+  useDroppable,
 } from '@dnd-kit/core';
 import {
   arrayMove,
@@ -23,6 +24,18 @@ import { useCalculatorStore } from '@/store/useCalculatorStore';
 import { Card } from '@/components/ui/card';
 import { nanoid } from 'nanoid';
 import { toast } from 'sonner';
+
+const DroppableArea = ({ children }: { children: React.ReactNode }) => {
+  const { setNodeRef } = useDroppable({
+    id: 'calculator-preview',
+  });
+
+  return (
+    <div ref={setNodeRef} className="min-h-[400px]">
+      {children}
+    </div>
+  );
+};
 
 export const CalculatorBuilder = () => {
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -57,9 +70,7 @@ export const CalculatorBuilder = () => {
     setActiveId(active.id as string);
     setIsDragging(true);
     
-    // Check if the dragged item is from the library
     if (typeof active.id === 'string' && active.id.startsWith('library-')) {
-      const componentType = active.id.replace('library-', '');
       const component = libraryComponents.find(c => `library-${c.type}-${c.value}` === active.id);
       if (component) {
         setDraggedComponent(component);
@@ -73,14 +84,14 @@ export const CalculatorBuilder = () => {
     setIsDragging(false);
 
     if (over) {
-      if (active.id.toString().startsWith('library-')) {
+      if (active.id.toString().startsWith('library-') && over.id === 'calculator-preview') {
         // Handle dropping a new component from the library
         if (draggedComponent) {
           const newComponent = { ...draggedComponent, id: nanoid() };
           addComponent(newComponent);
           toast.success('Component added successfully');
         }
-      } else if (active.id !== over.id) {
+      } else if (!active.id.toString().startsWith('library-') && active.id !== over.id) {
         // Handle reordering existing components
         const oldIndex = components.findIndex((c) => c.id === active.id);
         const newIndex = components.findIndex((c) => c.id === over.id);
@@ -133,25 +144,27 @@ export const CalculatorBuilder = () => {
             
             <Card className="p-6 bg-white/90 backdrop-blur-md border-violet-200 shadow-lg animate-slide-in dark:bg-gray-900/90 dark:border-violet-800">
               <h2 className="text-lg font-semibold mb-4 text-violet-800 dark:text-violet-200">Calculator Preview</h2>
-              <SortableContext items={components} strategy={rectSortingStrategy}>
-                <div className={`grid grid-cols-4 gap-2 ${isDragging ? 'opacity-50' : ''}`}>
-                  {components.map((component) => (
-                    <div
-                      key={component.id}
-                      className={component.type === 'display' ? 'col-span-4' : ''}
-                    >
-                      <DraggableComponent
-                        component={{
-                          ...component,
-                          value: component.type === 'display' ? expression || result : component.value,
-                        }}
-                        onRemove={handleRemove}
-                        onClick={handleClick}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </SortableContext>
+              <DroppableArea>
+                <SortableContext items={components} strategy={rectSortingStrategy}>
+                  <div className={`grid grid-cols-4 gap-2 ${isDragging ? 'opacity-50' : ''}`}>
+                    {components.map((component) => (
+                      <div
+                        key={component.id}
+                        className={component.type === 'display' ? 'col-span-4' : ''}
+                      >
+                        <DraggableComponent
+                          component={{
+                            ...component,
+                            value: component.type === 'display' ? expression || result : component.value,
+                          }}
+                          onRemove={handleRemove}
+                          onClick={handleClick}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </SortableContext>
+              </DroppableArea>
             </Card>
           </div>
 
