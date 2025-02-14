@@ -55,9 +55,9 @@ export const ComponentLibrary = ({ onAdd }: Props) => {
   const getButtonClass = (component: Omit<CalculatorComponent, 'id'>) => {
     const baseClass = 'transition-all duration-200 hover:scale-105 cursor-move';
 
-    if (component.type === 'clear') {
+  if (component.type === 'clear') {
   return `${baseClass} bg-red-500 text-white hover:bg-red-600 dark:bg-red-700`;
-}   
+}  
     if (component.type === 'display') {
       return `${baseClass} col-span-4 h-20 bg-gradient-to-r from-violet-50 to-white hover:from-violet-100 hover:to-white dark:from-violet-900 dark:to-violet-800 dark:text-white`;
     }
