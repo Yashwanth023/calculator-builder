@@ -44,7 +44,17 @@ export const useCalculatorStore = create<CalculatorState>()(
         
       updateExpression: (value) =>
         set((state) => {
-          const currentExp = state.expression;
+          let currentExp = state.expression;
+          
+          // If there's a result and we're starting a new calculation
+          if (state.result !== '0' && !currentExp) {
+            if ('+-*/'.includes(value)) {
+              currentExp = state.result; // Continue calculation with previous result
+            } else {
+              state.result = '0'; // Reset result for new calculation
+            }
+          }
+          
           const lastChar = currentExp[currentExp.length - 1];
           
           // Handle operator input
@@ -53,6 +63,15 @@ export const useCalculatorStore = create<CalculatorState>()(
               return {
                 expression: currentExp.slice(0, -1) + value,
               };
+            }
+          }
+
+          // Handle decimal point
+          if (value === '.') {
+            const parts = currentExp.split(/[\+\-\*\/]/);
+            const currentNumber = parts[parts.length - 1];
+            if (currentNumber.includes('.')) {
+              return { expression: currentExp }; // Prevent multiple decimal points
             }
           }
           
@@ -64,13 +83,35 @@ export const useCalculatorStore = create<CalculatorState>()(
       calculateResult: () =>
         set((state) => {
           try {
+            if (!state.expression) {
+              return state;
+            }
+            
+            // Replace all occurrences of multiple operators with the last one
+            let sanitizedExpression = state.expression.replace(/[\+\-\*\/]+$/, '');
+            
+            // Handle edge cases
+            if (!sanitizedExpression) {
+              return {
+                result: '0',
+                expression: '',
+              };
+            }
+
             // eslint-disable-next-line no-eval
-            const result = eval(state.expression).toString();
+            const calculatedResult = eval(sanitizedExpression);
+            
+            // Format the result
+            const result = Number.isInteger(calculatedResult) 
+              ? calculatedResult.toString()
+              : Number(calculatedResult.toFixed(8)).toString();
+
             return {
               result,
               expression: '',
             };
           } catch (error) {
+            console.error('Calculation error:', error);
             return {
               result: 'Error',
               expression: '',
